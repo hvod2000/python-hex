@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+def b2h(b):
+    b = b.encode('utf-8') if isinstance(b, str) else b
+    b = [f"{b:02x}" for b in b]
+    b = [b[i:i+26] for i in range(0, len(b), 26)]
+    return ("\n".join(" ".join(b) for b in b) + '\n').encode('utf-8')
+
+def h2b(h):
+    h = h.decode("utf-8") if isinstance(h, bytes) else h
+    return bytes(int(h, 16) for h in h.split())
+
+if __name__ == "__main__":
+    from sys import stdin, stdout, argv
+    from os.path import basename
+    cmd, cmds = basename(argv[-1]), dict(
+        v for v in globals().items()
+        if callable(v[1]) and v[1].__module__ == __name__
+    )
+    if cmd not in cmds:
+        raise Exception()
+    stdout.buffer.write(cmds[cmd](stdin.buffer.read()))
